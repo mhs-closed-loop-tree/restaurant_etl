@@ -13,6 +13,7 @@ def titleCase(st):
 def fixEncoding(st):
     return st.replace('Â', '')
 
+
 # Transform and convert the row into a form suitable for validation
 # Note two transforms being applied: titleCase and fixEncoding
 # The latter occurs in a field which is currently non-critical
@@ -40,6 +41,7 @@ def map(row):
       "inspection_type": row[17]
     }
 
+
 # Use Json Schema to validate the payload
 def get_schema_validator():
     with open('schema/restaurant.json') as schema_file:
@@ -60,9 +62,9 @@ def validate(json_row):
 
 
 def process(row):
-    json_row = map(row)  # We can do some schema driven mapping here but I've left for now
+    json_row = map(row)  # Refactor: Schema driven mapping, but left for now
     valid = validate(json_row)
-    # We're going to do some downstream checks and filters
+    # We're going to do some downstream checks and filters based upon this
     json_row['valid'] = valid
     return json_row
 
@@ -89,4 +91,5 @@ def processFile(in_file_name, out_file_name):
                 write(processed_row, out_file)
 
 
-processFile(sys.argv[1], sys.argv[2])
+if __name__ == '__main__':
+    processFile(sys.argv[1], sys.argv[2])
