@@ -11,7 +11,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 
 # Note: set to '-q' to hide the step output and interactive prompts
-QUIET=
+QUIET=-q
 
 LOAD_DATE=`date +%Y%m%d`
 IN_FILENAME=restaurant.in.$LOAD_DATE.csv
