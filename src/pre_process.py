@@ -4,12 +4,15 @@ import csv
 import jsonschema
 import json
 import datetime
+import logging
 
 
+# Util function for fixing case, python str.title() is not that good!
 def titleCase(st):
     return ' '.join(''.join([w[0].upper(), w[1:].lower()]) for w in st.split())
 
 
+# See encoding note beow
 def fixEncoding(st):
     return st.replace('Â', '')
 
@@ -20,6 +23,7 @@ def fixEncoding(st):
 # So its a quick and dirty attempt at fixing - not ideal
 # as it looks like an upstream encoding problem that needs fixing
 def map(row):
+    logging.debug('Entering map(row)')
     return {
       "camis": int(row[0]),
       "dba": titleCase(row[1]),
@@ -44,6 +48,7 @@ def map(row):
 
 # Use Json Schema to validate the payload
 def get_schema_validator():
+    logging.info('Entering validate(json_row)')
     with open('schema/restaurant.json') as schema_file:
         in_schema = json.load(schema_file)
         return jsonschema.Draft4Validator(in_schema)
@@ -52,17 +57,22 @@ def get_schema_validator():
 validator = get_schema_validator()
 
 
+# Check for any schema validation errors
+# note the schema is first pass only at present
 def validate(json_row):
+    logging.debug('Entering validate(json_row)')
     validation_errors = validator.iter_errors(json_row)
     valid = 1
     for schema_error in validation_errors:
-        # We might well log some output here but it could get too verbose
+        # We could log some output here but it could get too verbose
         valid = 0
     return valid
 
 
+# The core processing sequence for a row of CSV style data
 def process(row):
-    json_row = map(row)  # Refactor: Schema driven mapping, but left for now
+    logging.debug('Entering process(row)')
+    json_row = map(row)  # Refactor: Schema driven mapping
     valid = validate(json_row)
     # We're going to do some downstream checks and filters based upon this
     json_row['valid'] = valid
@@ -70,11 +80,19 @@ def process(row):
 
 
 def write(json_row, out_file):
+    logging.debug('Entering write(json_row, out_file)')
     out_writer = csv.DictWriter(out_file, json_row.keys())
     out_writer.writerow(json_row)
 
 
+# Entry point. Takes an input CSV file and generates a validated
+# CSV output file with lineage metadata
+# Note a JSON output would be better, but the dowstream postgres
+# load step is tied to CSV
+# Other target backends would be better with JSON records.
+# Most bulk inserts require a proprietrary format however.
 def processFile(in_file_name, out_file_name):
+    logging.info('Entering processFile')
     load_timestamp = datetime.datetime.now()
 
     with io.open(in_file_name, 'r', encoding='utf8') as in_file:
