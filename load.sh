@@ -50,4 +50,7 @@ if [ "$LOADED_COUNT" -lt "$STAGING_THRESHOLD" ]; then
   exit 3
 fi
 
-echo Proceed
+echo Loading search table
+psql -h $SQL_IP -U $DATABASE_USER_NAME -d $DATABASE_NAME < sql/load.sql
+
+# Leaving the downloaded and processed files for triage purposes, these can be archived later
