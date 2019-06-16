@@ -1,0 +1,26 @@
+{
+  "$id": "https://the-orchard/restaurant.validation.schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Restaurant Validation Schema",
+  "type": "object",
+  "properties": {
+      "camis":{"type":"integer"},
+      "dba":{"type":"string"},
+      "boro":{"type":"string"},
+      "building":{"type":"string"},
+      "street":{"type":"string"},
+      "zipcode":{"type":"string"},
+      "phone":{"type":"string"},
+      "cuisine_description":{"type":"string"},
+      "inspection_date":{"type":"string", "format": "date", "pattern": "^(((0)[0-9])|((1)[0-2]))(\/)([0-2][0-9]|(3)[0-1])(\/)[0-9]{4}$"},
+      "action":{"type":"string"},
+      "violation_code":{"type":"string"},
+      "violation_description":{"type":"string"},
+      "critical_flag":{"type":"string"},
+      "score":{"type":"string"},
+      "grade":{"type":"string"},
+      "grade_date":{"type":"string", "format": "date", "pattern": "^(((0)[0-9])|((1)[0-2]))(\/)([0-2][0-9]|(3)[0-1])(\/)[0-9]{4}$"},
+      "record_date":{"type":"string", "format": "date", "pattern": "^(((0)[0-9])|((1)[0-2]))(\/)([0-2][0-9]|(3)[0-1])(\/)[0-9]{4}$"},
+      "inspection_type":{"type":"string"}
+    }
+}
